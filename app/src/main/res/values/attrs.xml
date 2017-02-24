@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="CustomDraweeView">
+        <attr name="default_icon_id"
+            format="reference"/>
+        <attr name="default_error_id"
+            format="integer"/>
+        <attr name="my_ratio"
+            format="float"/>
+    </declare-styleable>
+
+
+</resources>
