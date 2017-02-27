@@ -87,15 +87,6 @@ public class ImagePipelineConfigUtils {
                 .setDownsampleEnabled(true)
                 .setResizeAndRotateEnabledForNetwork(true);
 
-//        NoOpMemoryTrimmableRegistry.getInstance().registerMemoryTrimmable(
-//                trimType -> {
-//            final double suggestedTrimRatio = trimType.getSuggestedTrimRatio();
-//
-//            if (MemoryTrimType.OnCloseToDalvikHeapLimit.getSuggestedTrimRatio() == suggestedTrimRatio || MemoryTrimType.OnSystemLowMemoryWhileAppInBackground.getSuggestedTrimRatio() == suggestedTrimRatio || MemoryTrimType.OnSystemLowMemoryWhileAppInForeground.getSuggestedTrimRatio() == suggestedTrimRatio) {
-//                ImagePipelineFactory.getInstance().getImagePipeline().clearMemoryCaches();
-//            }
-//        });
-
         NoOpMemoryTrimmableRegistry.getInstance().registerMemoryTrimmable(new MemoryTrimmable() {
             @Override
             public void trim(MemoryTrimType trimType) {

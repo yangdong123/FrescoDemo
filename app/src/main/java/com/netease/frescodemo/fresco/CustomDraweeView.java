@@ -11,6 +11,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
@@ -30,6 +31,13 @@ import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.netease.frescodemo.R;
+import com.netease.frescodemo.utils.StringUtiles;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 
 @SuppressWarnings("deprecation")
@@ -345,18 +353,18 @@ public class CustomDraweeView extends SimpleDraweeView {
                         .setProgressiveRenderingEnabled(false)
                         .build();
             case GIF:
-//                if ( isCutGif()) {
-//                    // 针对本地Gif预览时做特殊处理，裁剪出第一帧并显示
-//                    File file = new File(uri.getPath());
-//                    File cutFile = FileUtil.getCopyFile(file);
-//                    Uri newUri = new Uri.Builder().scheme("file").path(cutFile.getAbsolutePath()).build();
-//                    return ImageRequestBuilder.newBuilderWithSource(newUri)
-//                            .setResizeOptions(mResizeOptions)
-//                            .setAutoRotateEnabled(true)
-//                            .build();
-//                } else {
-//                    return ImageRequestBuilder.newBuilderWithSource(uri).setAutoRotateEnabled(true).build();
-//                }
+                if ( isCutGif()) {
+                    // 针对本地Gif预览时做特殊处理，裁剪出第一帧并显示
+                    File file = new File(uri.getPath());
+                    File cutFile = getCopyFile(file);
+                    Uri newUri = new Uri.Builder().scheme("file").path(cutFile.getAbsolutePath()).build();
+                    return ImageRequestBuilder.newBuilderWithSource(newUri)
+                            .setResizeOptions(mResizeOptions)
+                            .setAutoRotateEnabled(true)
+                            .build();
+                } else {
+                    return ImageRequestBuilder.newBuilderWithSource(uri).setAutoRotateEnabled(true).build();
+                }
         }
         throw new RuntimeException("must have a ImageRequest");
     }
@@ -536,4 +544,34 @@ public class CustomDraweeView extends SimpleDraweeView {
             CustomDraweeView.this.setTag(R.id.uriPath, uriPathTag);
         }
     }
+
+    public static File getCopyFile(File file) {
+       String FILE_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + File.separator + "temp";
+        String TEMP_IMG_PATH = FILE_PATH + File.separator + "TempImg";
+
+        File copyFile = new File(TEMP_IMG_PATH + File.separator + StringUtiles.getMD5(file.getName()));
+        if (!copyFile.exists()) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            Bitmap bitmap = null;
+            try {
+                bitmap = BitmapFactory.decodeStream(new FileInputStream(file), null, options);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            Bitmap region = DefaultBasePostProcessor.decodeRegion(bitmap, options.outWidth, options.outHeight);
+            byte[] bytes = DefaultBasePostProcessor.bitmap2Bytes(region, 80);
+            FileOutputStream fo;
+            try {
+                fo = new FileOutputStream(copyFile);
+                fo.write(bytes);
+                fo.flush();
+                fo.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return copyFile;
+    }
+
+
 }

@@ -30,7 +30,6 @@ public class LoadingProgressDrawable extends Drawable {
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), Loadings[getIndex()], options);
         int left = getBounds().right / 2 - options.outWidth / 2;
         int top = getBounds().bottom / 2 - options.outHeight / 2;
-//        canvas.drawColor(FansClubApplacation.getInstance().getResources().getColor(R.color.c00000000));
         canvas.drawColor(FrescoApplication.getInstance().getResources().getColor(R.color.cffffff));
         canvas.drawBitmap(bitmap, left, top, mPaint);
     }
