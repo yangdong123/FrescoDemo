@@ -25,6 +25,12 @@
         android:padding="20dp"/>
 
     <com.netease.frescodemo.fresco.CustomDraweeView
+        android:id="@+id/iv_customl"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:padding="20dp"/>
+
+    <com.netease.frescodemo.fresco.CustomDraweeView
         android:id="@+id/iv_roundcustom"
         android:layout_width="200dp"
         android:layout_height="200dp" />
